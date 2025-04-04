@@ -5,6 +5,7 @@ import com.example.test.pojo.User;
 import com.example.test.service.UserService;
 import com.example.test.utils.JwtUtil;
 import com.example.test.utils.Md5Util;
+import com.example.test.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -55,9 +56,8 @@ public class UserController {
     }
 
     @GetMapping("/userInfo")
-    public Result<User> userInfo(@RequestHeader(name="Authorization") String token){
-        Map<String,Object> map = JwtUtil.parseToken(token);
-        System.out.println(map);
+    public Result<User> userInfo(){
+        Map<String,Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
         User user = userService.findByUserName(username);
         return Result.success(user);
